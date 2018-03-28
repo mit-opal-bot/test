@@ -9,8 +9,8 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh '''pip install flask
-pip install behave
+        sh '''pip install --user flask
+pip install --user behave
 pip freeze'''
       }
     }
