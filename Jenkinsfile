@@ -10,8 +10,8 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh '''whoami
-echo $(whoami)'''
+        sh '''pip install flask behave
+pip freeze'''
       }
     }
   }
