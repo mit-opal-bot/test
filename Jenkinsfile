@@ -11,13 +11,18 @@ pipeline {
     stage('Build') {
       steps {
         sh '''pip install flask behave pylint
+ls -al
+pwd
 '''
       }
     }
     stage('Pylint') {
       steps {
-        sh '''pylint --output-format=parseable app.py > pylint.log || echo "pylint exited with $?"
-cat pylint.log'''
+        sh '''pwd
+ls -al
+pylint --output-format=parseable app.pyÂ > pylint.log || echo "pylint exited with $?"
+cat pylint.log
+'''
       }
     }
   }
