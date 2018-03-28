@@ -9,8 +9,9 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh 'python --version'
-        pwd()
+        sh '''pip install flask
+pip install behave
+pip freeze'''
       }
     }
   }
