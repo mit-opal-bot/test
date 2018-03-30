@@ -10,8 +10,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh '''pip install flask behave pylint
-'''
+        sh 'pip install flask behave pylint requests'
       }
     }
     stage('Pylint') {
@@ -21,6 +20,11 @@ pipeline {
           $class: 'WarningsPublisher',
           consoleParsers: [[parserName: 'PyLint']],
         ])
+      }
+    }
+    stage('Behave') {
+      steps {
+        sh 'behave --junit --junit-output reports'
       }
     }
   }
