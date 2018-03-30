@@ -16,10 +16,18 @@ pipeline {
     }
     stage('Pylint') {
       steps {
-        sh '''pylint --output-format=parseable app.py > pylint.log || echo "pylint exited with $?"
-cat pylint.log
-'''
-        warnings()
+        sh 'pylint --output-format=parseable app.py || echo "pylint exited with $?"'
+        step([
+          $class: 'WarningsPublisher',
+          canComputeNew: false,
+          canResolveRelativePaths: false,
+          consoleParsers: [[parserName: 'PyLint']],
+          defaultEncoding: '',
+          excludePattern: '',
+          healthy: '',
+          includePattern: '',
+          messagesPattern: '',
+          unHealthy: '0'])
       }
     }
   }
