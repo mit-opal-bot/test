@@ -24,7 +24,7 @@ pipeline {
     }
     stage('Behave') {
       steps {
-        sh 'behave --junit --junit-output reports'
+        sh 'behave --junit --junit-directory reports'
       }
     }
   }
