@@ -19,6 +19,7 @@ pipeline {
         sh '''pylint --output-format=parseable app.py > pylint.log || echo "pylint exited with $?"
 cat pylint.log
 '''
+        warnings()
       }
     }
   }
