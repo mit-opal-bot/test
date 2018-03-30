@@ -19,7 +19,8 @@ pipeline {
         sh 'pylint --output-format=parseable app.py || echo "pylint exited with $?"'
         step([
           $class: 'WarningsPublisher',
-          consoleParsers: [[parserName: 'PyLint']])
+          consoleParsers: [[parserName: 'PyLint']],
+        ])
       }
     }
   }
