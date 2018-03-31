@@ -9,6 +9,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
+        githubNotify context: 'Notification key', description: 'Chata',  status: 'PENDING'
         sh 'pip install flask behave pylint requests'
       }
     }
@@ -25,6 +26,12 @@ pipeline {
       steps {
         sh 'behave --junit --junit-directory reports'
         sh 'rm -rf reports'
+
+      }
+    }
+    stage('Results') {
+      steps {
+        githubNotify context: 'Notification key', description: 'Woobata',  status: 'SUCCESS'
       }
     }
   }
