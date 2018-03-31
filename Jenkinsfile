@@ -33,6 +33,7 @@ pipeline {
     stage('Results') {
       steps {
         sh 'printenv'
+        sleep 10
         githubNotify context: 'Notification key', description: 'Woobata',  status: 'SUCCESS'
       }
     }
