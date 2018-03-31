@@ -10,7 +10,7 @@ pipeline {
     stage('Build') {
       steps {
         sh 'printenv'
-        // githubNotify context: 'Notification key', description: 'Chata',  status: 'PENDING'
+        githubNotify context: 'Notification key', description: 'Chata',  status: 'PENDING'
         sh 'pip install flask behave pylint requests'
       }
     }
@@ -33,7 +33,7 @@ pipeline {
     stage('Results') {
       steps {
         sh 'printenv'
-        // githubNotify context: 'Notification key', description: 'Woobata',  status: 'SUCCESS'
+        githubNotify context: 'Notification key', description: 'Woobata',  status: 'SUCCESS'
       }
     }
   }
