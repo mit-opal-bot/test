@@ -23,13 +23,13 @@ pipeline {
         ])
       }
     }
-    stage('Behave') {
-      steps {
-        sh 'behave --junit --junit-directory reports'
-        sh 'rm -rf reports'
+    // stage('Behave') {
+    //   steps {
+    //     sh 'behave --junit --junit-directory reports'
+    //     sh 'rm -rf reports'
 
-      }
-    }
+    //   }
+    // }
     stage('Results') {
       steps {
         sh 'printenv'
