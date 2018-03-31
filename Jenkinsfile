@@ -26,7 +26,6 @@ pipeline {
     //   steps {
     //     sh 'behave --junit --junit-directory reports'
     //     sh 'rm -rf reports'
-
     //   }
     // }
     stage('Results') {
