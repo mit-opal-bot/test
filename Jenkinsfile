@@ -6,7 +6,7 @@ pipeline {
         sh 'printenv'
         sh '''
           cd $WORKSPACE/stuff
-          docker-compose build
+          /usr/local/bin/docker-compose build
         '''
       }
     }
@@ -14,8 +14,8 @@ pipeline {
       steps {
         sh '''
           cd $WORKSPACE/stuff
-          docker-compose up -d
-          docker-compose exec app /bin/bash -c 'until [ $(curl -k -s -L -w "%{http_code}" -o /dev/null "http://app:5000") -eq 200 ]; do echo "Waiting..."; sleep 1; done; echo "app container is ready"'
+          /usr/local/bin/docker-compose up -d
+          /usr/local/bin/docker-compose exec app /bin/bash -c 'until [ $(curl -k -s -L -w "%{http_code}" -o /dev/null "http://app:5000") -eq 200 ]; do echo "Waiting..."; sleep 1; done; echo "app container is ready"'
         '''
       }
     }
@@ -24,7 +24,7 @@ pipeline {
     always {
       sh '''
         cd $WORKSPACE/stuff
-        docker-compose down -v
+        /usr/local/bin/docker-compose down -v
       '''
     }
   }
