@@ -1,0 +1,24 @@
+# Creates a Jenkins server which can manage the host's Docker environment.
+# Needed in order to build images and run containers as part of Jenkins jobs
+# when Jenkins itself is a Docker container.
+
+version: '2'
+
+volumes:
+  jenkins_home: {}
+
+services:
+  jenkins:
+    build: .
+    # Note: group_add is not available in version 3 of the Docker Compose file
+    # format.
+    group_add:
+      # Must match id of docker group on host:
+      # stat -c %g /var/run/docker.sock
+      - 999
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
