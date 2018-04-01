@@ -5,7 +5,7 @@ pipeline {
       steps {
         sh 'printenv'
         sh '''
-          cd $WORKSPACE/stuff
+          cd ${WORKSPACE}/stuff
           docker-compose build
         '''
       }
@@ -13,9 +13,9 @@ pipeline {
     stage('Spin up') {
       steps {
         sh '''
-          cd $WORKSPACE/stuff
+          cd ${WORKSPACE}/stuff
           docker-compose up -d
-          docker-compose exec -T app /bin/bash -c \"until [ $(curl -k -s -L -w \\"%{http_code}\\" -o /dev/null \\"http://app:5000\\") -eq 200 ]; do echo \\"Waiting...\\"; sleep 1; done; echo \\"app container is ready\\"\"
+          docker-compose exec -T app /bin/bash -c docker-compose exec app /bin/bash -c 'until [ $(curl -k -s -L -w "%{http_code}" -o /dev/null "http://app:5000") -eq 200 ]; do echo "Waiting..."; sleep 1; done; echo "app container is ready"'
         '''
       }
     }
@@ -23,7 +23,7 @@ pipeline {
   post {
     always {
       sh '''
-        cd $WORKSPACE/stuff
+        cd ${WORKSPACE}/stuff
         docker-compose down -v
       '''
     }
