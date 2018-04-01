@@ -19,14 +19,15 @@ pipeline {
         '''
       }
     }
-    post {
-      always {
-        sh '''
-          cd ${env.WORKSPACE}/stuff
-          docker-compose down -v
-        '''
-      }
+  }
+  post {
+    always {
+      sh '''
+        cd ${env.WORKSPACE}/stuff
+        docker-compose down -v
+      '''
     }
+  }
     // stage('Build') {
     //   steps {
     //     githubNotify context: 'Notification key', description: 'Chata',  status: 'PENDING'
@@ -53,5 +54,4 @@ pipeline {
     //     githubNotify context: 'Notification key', description: 'Woobata',  status: 'SUCCESS'
     //   }
     // }
-  }
 }
