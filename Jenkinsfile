@@ -2,6 +2,7 @@ pipeline {
   agent any
   stages {
     stage('Build Docker images') {
+      // Build the images before doing anything else
       steps {
         sh 'printenv'
         sh '''
@@ -10,23 +11,39 @@ pipeline {
         '''
       }
     }
-    stage('Spin up') {
+    stage('Spin up servers') {
       steps {
+        // Use Docker Compose to spin up servers for functional testing.
         sh '''
           cd ${WORKSPACE}/stuff
           docker-compose up -d
           docker-compose exec -T app /bin/bash -c \'until [ $(curl -k -s -L -w "%{http_code}" -o /dev/null "http://app:5000") -eq 200 ]; do echo "Waiting..."; sleep 1; done; echo "app container is ready"\'
         '''
+        // Divine the network name just created by docker compose.
+        sh '''
+          COMPOSE_CONTAINER=$(docker-compose ps -q | head -n 1)
+          COMPOSE_NETWORK=$(docker inspect ${COMPOSE_CONTAINER} -f \'{{range $key, $value := .NetworkSettings.Networks}}{{printf "%s" $key}}{{end}}\')
+        '''
+        echo ${COMPOSE_CONTAINER}
+        echo ${COMPOSE_NETWORK}
+        // Run tests
+        // e.g. docker run --network $COMPOSE_NET --network-alias test python:3
+        // docker.image('python:3').inside("--network=${COMPOSE_NETWORK}")
       }
     }
   }
   post {
     always {
+      // Make sure to shut down and remove containers, volumes, and networks
+      // created by this run.
       sh '''
         cd ${WORKSPACE}/stuff
         docker-compose down -v
       '''
     }
+    // If this build failed, delete the Docker images it built.
+    // If this build succeeded, keep its Docker images but delete any older
+    // saved versions of those images.
   }
     // stage('Build') {
     //   steps {
