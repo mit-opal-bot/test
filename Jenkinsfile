@@ -28,8 +28,25 @@ pipeline {
             docker inspect ${compose_container} -f \'{{range \$key, \$value := .NetworkSettings.Networks}}{{printf \"%s\" \$key}}{{end}}\'
           """).trim()
           echo "Docker Compose network is ${compose_network}."
-          // Run tests
-          // e.g. docker run --network $COMPOSE_NET --network-alias test python:3
+        }
+      }
+    }
+    stage('Run tests') {
+      steps {
+        // Add containers to compose network so containers can find each other.
+        // Override user to the image's default of root because Jenkins
+        // overrides all Docker users to the jenkins user (1000:1000).
+        // Chown any created files to the jenkins user so it can read them
+        // after tests have completed.
+        script {
+          docker.image('python:3').inside("--user=root --network=${compose_network}") {
+            sh '''
+              pip install pylint
+              pylint --output-format=parseable stuff || echo "pylint exited with $?"'
+            '''
+          }
+        }
+        script {
           docker.image('python:3').inside("--user=root --network=${compose_network}") {
             sh '''
               cd stuff
@@ -42,9 +59,12 @@ pipeline {
         }
       }
     }
-    stage('Run tests') {
+    stage('Collect results') {
       steps {
-        echo "Docker Compose network is still ${compose_network}."
+        step([
+          $class: 'WarningsPublisher',
+          consoleParsers: [[parserName: 'PyLint']],
+        ])
       }
     }
   }
