@@ -4,7 +4,6 @@ pipeline {
     stage('Build Docker images') {
       // Build the images before doing anything else
       steps {
-        sh 'printenv'
         sh '''
           cd ${WORKSPACE}/stuff
           docker-compose build
@@ -33,15 +32,19 @@ pipeline {
           // e.g. docker run --network $COMPOSE_NET --network-alias test python:3
           docker.image('python:3').inside("--user=root --network=${compose_network}") {
             sh '''
-              whoami
-              id
               cd stuff
               pip install -r features/requirements.txt
               pip freeze
               behave
+              chown -R 1000:1000 *
             '''
           }
         }
+      }
+    }
+    stage('Run tests') {
+      steps {
+        echo "Docker Compose network is still ${compose_network}."
       }
     }
   }
