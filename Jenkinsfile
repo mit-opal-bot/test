@@ -28,14 +28,14 @@ pipeline {
             cd ${WORKSPACE}/stuff
             docker inspect ${compose_container} -f \'{{range \$key, \$value := .NetworkSettings.Networks}}{{printf \"%s\" \$key}}{{end}}\'
           """).trim()
-        }
-        echo "Docker Compose network is ${compose_network}."
-        // Run tests
-        // e.g. docker run --network $COMPOSE_NET --network-alias test python:3
-        docker.image('python:3') {
-          sh '''
-            curl -i http://app:5000
-          '''
+          echo "Docker Compose network is ${compose_network}."
+          // Run tests
+          // e.g. docker run --network $COMPOSE_NET --network-alias test python:3
+          docker.image('python:3').inside("--network=${compose_network}") {
+            sh '''
+              curl -i http://app:5000
+            '''
+          }
         }
       }
     }
