@@ -31,7 +31,7 @@ pipeline {
           """).trim()
           // println compose_network
         }
-        echo compose_network
+        echo "${compose_network}"
         // sh '''
         //   cd ${WORKSPACE}/stuff
         //   docker-compose ps -q | head -n 1
