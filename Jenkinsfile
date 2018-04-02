@@ -21,14 +21,14 @@ pipeline {
         '''
         // Divine the network name just created by docker compose.
         script {
-          def compose_container = sh (returnStdout: true, script: """
+          def compose_container = sh (returnStdout: true, script: '''
             cd ${WORKSPACE}/stuff && docker-compose ps -q | head -n 1
-          """).trim()
+          ''').trim()
           println compose_container
-          def compose_network = sh (returnStdout: true, script: """
+          def compose_network = sh (returnStdout: true, script: '''
             cd ${WORKSPACE}/stuff
             docker inspect ${compose_container} -f \'{{range \$key, \$value := .NetworkSettings.Networks}}{{printf \"%s\" \$key}}{{end}}\'
-          """).trim()
+          ''').trim()
           println compose_network
         }
         // sh '''
