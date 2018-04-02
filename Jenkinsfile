@@ -20,6 +20,8 @@ pipeline {
           docker-compose exec -T app /bin/bash -c \'until [ $(curl -k -s -L -w "%{http_code}" -o /dev/null "http://app:5000") -eq 200 ]; do echo "Waiting..."; sleep 1; done; echo "app container is ready"\'
         '''
         // Divine the network name just created by docker compose.
+        def compose_container = sh returnStdout: true, script: 'docker-compose ps -q | head -n 1'
+        println compose_container
         sh """
           docker-compose ps -q | head -n 1
           COMPOSE_CONTAINER=\$(docker-compose ps -q | head -n 1)
