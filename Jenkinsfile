@@ -1,3 +1,26 @@
+import hudson.tasks.test.AbstractTestResultAction
+import hudson.model.Actionable
+
+@NonCPS
+def getTestSummary = { ->
+    def testResultAction = currentBuild.rawBuild.getAction(AbstractTestResultAction.class)
+    def summary = ""
+
+    if (testResultAction != null) {
+        def total = testResultAction.getTotalCount()
+        def failed = testResultAction.getFailCount()
+        def skipped = testResultAction.getSkipCount()
+
+        summary = "Test results:\n\t"
+        summary = summary + ("Passed: " + (total - failed - skipped))
+        summary = summary + (", Failed: " + failed)
+        summary = summary + (", Skipped: " + skipped)
+    } else {
+        summary = "No tests found"
+    }
+    return summary
+}
+
 pipeline {
   agent any
   stages {
@@ -14,7 +37,8 @@ pipeline {
         '''
         echo "${currentBuild.result}"
         echo "${currentBuild.currentResult}"
-        echo "${currentBuild}"
+        println currentBuild.dump()
+        println build.dump()
       }
       post {
         success {
@@ -96,7 +120,7 @@ pipeline {
       '''
       // Set GitHub commits statuses
       githubNotify context: 'Python linter', description: 'Build in progress',  status: "${currentBuild.currentResult}"
-      githubNotify context: 'Functional tests', description: 'Build in progress',  status: "${currentBuild.currentResult}"
+      githubNotify context: 'Functional tests', description: getTestSummary(),  status: "${currentBuild.currentResult}"
 
     }
     // If this build failed, delete the Docker images it built.
