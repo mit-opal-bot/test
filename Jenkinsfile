@@ -1,25 +1,4 @@
-import hudson.tasks.test.AbstractTestResultAction
-import hudson.model.Actionable
-
-@NonCPS
-def getTestSummary = { ->
-    def testResultAction = currentBuild.rawBuild.getAction(AbstractTestResultAction.class)
-    def summary = ""
-
-    if (testResultAction != null) {
-        def total = testResultAction.getTotalCount()
-        def failed = testResultAction.getFailCount()
-        def skipped = testResultAction.getSkipCount()
-
-        summary = "Test results:\n\t"
-        summary = summary + ("Passed: " + (total - failed - skipped))
-        summary = summary + (", Failed: " + failed)
-        summary = summary + (", Skipped: " + skipped)
-    } else {
-        summary = "No tests found"
-    }
-    return summary
-}
+@Library('testSummary')
 
 pipeline {
   agent any
@@ -114,11 +93,11 @@ pipeline {
       sh '''
         cd ${WORKSPACE}/stuff
         docker-compose down -v
-        
       '''
+      println testSummary()
       // Set GitHub commits statuses
       githubNotify context: 'Python linter', description: 'Build in progress',  status: "${currentBuild.currentResult}"
-      githubNotify context: 'Functional tests', description: getTestSummary(),  status: "${currentBuild.currentResult}"
+      githubNotify context: 'Functional tests', description: testSummary(),  status: "${currentBuild.currentResult}"
 
     }
     // If this build failed, delete the Docker images it built.
