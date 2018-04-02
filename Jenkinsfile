@@ -31,7 +31,7 @@ pipeline {
           echo "Docker Compose network is ${compose_network}."
           // Run tests
           // e.g. docker run --network $COMPOSE_NET --network-alias test python:3
-          docker.image('python:3').inside("--network=${compose_network}") {
+          docker.image('python:3').inside("--user=root --network=${compose_network}") {
             sh '''
               whoami
               id
