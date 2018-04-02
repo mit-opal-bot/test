@@ -37,8 +37,6 @@ pipeline {
         '''
         echo "${currentBuild.result}"
         echo "${currentBuild.currentResult}"
-        println currentBuild
-        println build
       }
       post {
         success {
