@@ -1,5 +1,5 @@
 @Library('testSummary') _
-import edu.mit.jenkins.testSummary
+import static edu.mit.jenkins.testSummary.getTestSummary
 
 import hudson.tasks.test.AbstractTestResultAction
 import hudson.model.Actionable
@@ -98,10 +98,10 @@ pipeline {
         cd ${WORKSPACE}/stuff
         docker-compose down -v
       '''
-      echo testSummary.getTestSummary()
+      echo getTestSummary()
       // Set GitHub commits statuses
       githubNotify context: 'Python linter', description: 'Build in progress',  status: "${currentBuild.currentResult}"
-      githubNotify context: 'Functional tests', description: testSummary.getTestSummary(),  status: "${currentBuild.currentResult}"
+      githubNotify context: 'Functional tests', description: getTestSummary(),  status: "${currentBuild.currentResult}"
 
     }
     // If this build failed, delete the Docker images it built.
