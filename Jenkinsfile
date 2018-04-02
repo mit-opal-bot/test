@@ -72,7 +72,7 @@ pipeline {
               cd stuff
               pip install -r features/requirements.txt
               pip freeze
-              behave --junit --junit-directory reports
+              behave --junit --junit-directory reports || echo "behave exited with $?"
               chown -R 1000:1000 reports
             '''
           }
