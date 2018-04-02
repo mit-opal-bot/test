@@ -42,7 +42,7 @@ pipeline {
           docker.image('python:3').inside("--user=root --network=${compose_network}") {
             sh '''
               pip install pylint
-              pylint --output-format=parseable stuff || echo "pylint exited with $?"'
+              pylint --output-format=parseable stuff || echo "pylint exited with $?"
             '''
           }
         }
