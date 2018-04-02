@@ -21,7 +21,7 @@ pipeline {
         '''
         // Divine the network name just created by docker compose.
         script {
-          def potato = sh returnStdout: true, script: 'echo potatoes'
+          def potato = sh returnStdout: true, script: 'docker-compose ps -q'
           println potato
           def compose_container = sh returnStdout: true, script: 'docker-compose ps -q | head -n 1'
           println compose_container
