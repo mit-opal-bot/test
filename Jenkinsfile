@@ -21,11 +21,11 @@ pipeline {
         '''
         // Divine the network name just created by docker compose.
         script {
-          def potato = sh returnStdout: true, script: 'docker-compose ps -q'
+          def potato = sh returnStdout: true, script: 'cd ${WORKSPACE}/stuff && docker-compose ps -q'
           println potato
-          def compose_container = sh returnStdout: true, script: 'docker-compose ps -q | head -n 1'
+          def compose_container = sh returnStdout: true, script: 'cd ${WORKSPACE}/stuff && docker-compose ps -q | head -n 1'
           println compose_container
-          def compose_network = sh returnStdout: true, script: 'docker inspect \$COMPOSE_CONTAINER -f \'{{range \$key, \$value := .NetworkSettings.Networks}}{{printf "%s" \$key}}{{end}}\''
+          def compose_network = sh returnStdout: true, script: 'docker inspect $compose_container -f \'{{range \$key, \$value := .NetworkSettings.Networks}}{{printf "%s" \$key}}{{end}}\''
           println compose_network
         }
         // sh """
