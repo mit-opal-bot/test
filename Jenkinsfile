@@ -24,26 +24,19 @@ pipeline {
           compose_container = sh (returnStdout: true, script: """
             cd ${WORKSPACE}/stuff && docker-compose ps -q | head -n 1
           """).trim()
-          println compose_container
           compose_network = sh (returnStdout: true, script: """
             cd ${WORKSPACE}/stuff
             docker inspect ${compose_container} -f \'{{range \$key, \$value := .NetworkSettings.Networks}}{{printf \"%s\" \$key}}{{end}}\'
           """).trim()
-          println compose_network
         }
-        println compose_network
-        echo "${compose_network}"
-        // sh '''
-        //   cd ${WORKSPACE}/stuff
-        //   docker-compose ps -q | head -n 1
-        //   COMPOSE_CONTAINER=\$(docker-compose ps -q | head -n 1)
-        //   COMPOSE_NETWORK=\$(docker inspect \$COMPOSE_CONTAINER -f \'{{range \$key, \$value := .NetworkSettings.Networks}}{{printf "%s" \$key}}{{end}}\')
-        //   echo \$COMPOSE_CONTAINER
-        //   echo \$COMPOSE_NETWORK
-        // '''
+        echo "Docker Compose network is ${compose_network}."
         // Run tests
         // e.g. docker run --network $COMPOSE_NET --network-alias test python:3
-        // docker.image('python:3').inside("--network=${COMPOSE_NETWORK}")
+        docker.image('python:3').inside("--network=${compose_network}") {
+          sh '''
+            curl -i http://app:5000
+          '''
+        }
       }
     }
   }
