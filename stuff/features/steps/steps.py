@@ -3,7 +3,7 @@ import requests
 
 @when("we request a page")
 def step_impl(context):
-    url = "http://localhost:5000/"
+    url = "http://app:5000/"
     context.response = requests.get(url)
 
 

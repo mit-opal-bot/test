@@ -33,9 +33,10 @@ pipeline {
           // e.g. docker run --network $COMPOSE_NET --network-alias test python:3
           docker.image('python:3').inside("--network=${compose_network}") {
             sh '''
-              pwd
-              ls -al
-              curl -i http://app:5000
+              cd stuff
+              pip install -r features/requirements.txt
+              pip freeze
+              behave
             '''
           }
         }
