@@ -23,7 +23,7 @@ pipeline {
         sh """
           docker-compose ps -q | head -n 1
           COMPOSE_CONTAINER=\$(docker-compose ps -q | head -n 1)
-          COMPOSE_NETWORK=\$(docker inspect \$COMPOSE_CONTAINER -f \'{{range $key, $value := .NetworkSettings.Networks}}{{printf "%s" $key}}{{end}}\')
+          COMPOSE_NETWORK=\$(docker inspect \$COMPOSE_CONTAINER -f \'{{range \$key, \$value := .NetworkSettings.Networks}}{{printf "%s" \$key}}{{end}}\')
           echo \$COMPOSE_CONTAINER
           echo \$COMPOSE_NETWORK
         """
