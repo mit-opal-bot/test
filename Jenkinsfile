@@ -2,12 +2,27 @@ pipeline {
   agent any
   stages {
     stage('Build Docker images') {
-      // Build the images before doing anything else
+      // Set GitHub commits statuses
+      githubNotify context: 'Docker images', description: 'Build in progress',  status: 'PENDING'
+      githubNotify context: 'Python linter', description: 'Build in progress',  status: 'PENDING'
+      githubNotify context: 'Functional tests', description: 'Build in progress',  status: 'PENDING'
+      // Build the images first
       steps {
         sh '''
           cd ${WORKSPACE}/stuff
           docker-compose build
         '''
+        echo "${currentBuild.result}"
+        echo "${currentBuild.currentResult}"
+        echo "${currentBuild}"
+      }
+      post {
+        success {
+          githubNotify context: 'Docker images', description: 'Build in progress',  status: 'SUCCESS'
+        }
+        failure {
+          githubNotify context: 'Docker images', description: 'Build in progress',  status: 'FAILURE'
+        }
       }
     }
     stage('Spin up servers') {
@@ -66,6 +81,7 @@ pipeline {
           consoleParsers: [[parserName: 'PyLint']],
         ])
         junit '**/reports/*.xml'
+        sh 'printenv'
       }
     }
   }
@@ -76,7 +92,12 @@ pipeline {
       sh '''
         cd ${WORKSPACE}/stuff
         docker-compose down -v
+        
       '''
+      // Set GitHub commits statuses
+      githubNotify context: 'Python linter', description: 'Build in progress',  status: "${currentBuild.currentResult}"
+      githubNotify context: 'Functional tests', description: 'Build in progress',  status: "${currentBuild.currentResult}"
+
     }
     // If this build failed, delete the Docker images it built.
     // If this build succeeded, keep its Docker images but delete any older
