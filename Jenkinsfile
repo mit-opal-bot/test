@@ -23,9 +23,9 @@ pipeline {
         sh """
           docker-compose ps -q | head -n 1
           COMPOSE_CONTAINER=\$(docker-compose ps -q | head -n 1)
-          COMPOSE_NETWORK=\$(docker inspect $COMPOSE_CONTAINER -f \'{{range $key, $value := .NetworkSettings.Networks}}{{printf "%s" $key}}{{end}}\')
-          echo $COMPOSE_CONTAINER
-          echo $COMPOSE_NETWORK
+          COMPOSE_NETWORK=\$(docker inspect \$COMPOSE_CONTAINER -f \'{{range $key, $value := .NetworkSettings.Networks}}{{printf "%s" $key}}{{end}}\')
+          echo \$COMPOSE_CONTAINER
+          echo \$COMPOSE_NETWORK
         """
         // Run tests
         // e.g. docker run --network $COMPOSE_NET --network-alias test python:3
