@@ -1,13 +1,13 @@
 pipeline {
   agent any
   stages {
+    // Build the images first
     stage('Build Docker images') {
-      // Set GitHub commits statuses
-      githubNotify context: 'Docker images', description: 'Build in progress',  status: 'PENDING'
-      githubNotify context: 'Python linter', description: 'Build in progress',  status: 'PENDING'
-      githubNotify context: 'Functional tests', description: 'Build in progress',  status: 'PENDING'
-      // Build the images first
       steps {
+        // Set GitHub commits statuses
+        githubNotify context: 'Docker images', description: 'Build in progress',  status: 'PENDING'
+        githubNotify context: 'Python linter', description: 'Build in progress',  status: 'PENDING'
+        githubNotify context: 'Functional tests', description: 'Build in progress',  status: 'PENDING'
         sh '''
           cd ${WORKSPACE}/stuff
           docker-compose build
