@@ -1,5 +1,5 @@
 @Library('testSummary') _
-import edu.mit.jenkins.testSummary
+import edu.mit.jenkins.Utils
 
 import hudson.tasks.test.AbstractTestResultAction
 import hudson.model.Actionable
@@ -99,42 +99,17 @@ pipeline {
         docker-compose down -v
       '''
       script {
-        summary = new testSummary()
-        echo summary.getTestSummary()
+        utils = new Utils()
+        echo utils.getTestSummary()
+        summary = utils.getTestSummary()
+        status = utils.gitHubStatusForBuildResult(currentBuild.currentResult)
         // Set GitHub commits statuses
-        githubNotify context: 'Python linter', description: 'Build in progress',  status: "${currentBuild.currentResult}"
-        githubNotify context: 'Functional tests', description: summary.getTestSummary(),  status: "${currentBuild.currentResult}"
+        githubNotify context: 'Python linter', description: 'Build in progress',  status: status
+        githubNotify context: 'Functional tests', description: summary,  status: status
       }
     }
     // If this build failed, delete the Docker images it built.
     // If this build succeeded, keep its Docker images but delete any older
     // saved versions of those images.
   }
-    // stage('Build') {
-    //   steps {
-    //     githubNotify context: 'Notification key', description: 'Chata',  status: 'PENDING'
-    //     sh 'pip install flask behave pylint requests'
-    //   }
-    // }
-    // stage('Pylint') {
-    //   steps {
-    //     sh 'pylint --output-format=parseable app.py || echo "pylint exited with $?"'
-    //     step([
-    //       $class: 'WarningsPublisher',
-    //       consoleParsers: [[parserName: 'PyLint']],
-    //     ])
-    //   }
-    // }
-    // stage('Behave') {
-    //   steps {
-    //     sh 'behave --junit --junit-directory reports'
-    //     sh 'rm -rf reports'
-    //   }
-    // }
-    // stage('Results') {
-    //   steps {
-    //     githubNotify context: 'Notification key', description: 'Woobata',  status: 'SUCCESS'
-    //   }
-    // }
-
 }
