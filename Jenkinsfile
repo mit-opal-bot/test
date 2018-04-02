@@ -52,8 +52,8 @@ pipeline {
               cd stuff
               pip install -r features/requirements.txt
               pip freeze
-              behave
-              chown -R 1000:1000 *
+              behave --junit --junit-directory reports
+              chown -R 1000:1000 reports
             '''
           }
         }
@@ -65,6 +65,7 @@ pipeline {
           $class: 'WarningsPublisher',
           consoleParsers: [[parserName: 'PyLint']],
         ])
+        junit '**/reports/*.xml'
       }
     }
   }
