@@ -64,11 +64,12 @@ pipeline {
         // after tests have completed.
         script {
           docker.image('python:3-alpine').inside("--user=root --network=${compose_network}") {
-            sh """
+            sh '''
               pip install pylint
               pip install -r stuff/app/requirements.txt
+              echo "${WORKSPACE}/stuff/app/app.py"
               pylint --output-format=parseable ${WORKSPACE}/stuff/app/app.py || echo "pylint exited with $?"
-            """
+            '''
           }
         }
         script {
@@ -89,7 +90,7 @@ pipeline {
         step([
           $class: 'WarningsPublisher',
           consoleParsers: [[parserName: 'PyLint']],
-
+          
         ])
         junit '**/reports/*.xml'
         script {
