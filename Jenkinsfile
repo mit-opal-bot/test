@@ -4,6 +4,8 @@ import edu.mit.jenkins.Utils
 import hudson.tasks.test.AbstractTestResultAction
 import hudson.model.Actionable
 
+utils = new Utils()
+
 pipeline {
   agent any
   stages {
@@ -22,11 +24,16 @@ pipeline {
         echo "${currentBuild.currentResult}"
       }
       post {
-        success {
-          githubNotify context: 'Docker images', description: 'Build in progress',  status: 'SUCCESS'
-        }
-        failure {
-          githubNotify context: 'Docker images', description: 'Build in progress',  status: 'FAILURE'
+        always {
+          script {
+            if (currentBuild.currentResult == 'SUCCESS') {
+              description = 'Built successfully'
+            } else {
+              description = 'Failed to build'
+            }
+            status = utils.gitHubStatusForBuildResult(currentBuild.currentResult)
+            githubNotify context: 'Docker images', description: description,  status: status
+          }
         }
       }
     }
@@ -99,7 +106,6 @@ pipeline {
         docker-compose down -v
       '''
       script {
-        utils = new Utils()
         echo utils.getTestSummary()
         summary = utils.getTestSummary()
         status = utils.gitHubStatusForBuildResult(currentBuild.currentResult)
