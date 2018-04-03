@@ -17,8 +17,6 @@ pipeline {
           cd ${WORKSPACE}/stuff
           docker-compose build
         '''
-        echo "${currentBuild.result}"
-        echo "${currentBuild.currentResult}"
       }
       post {
         always {
@@ -98,8 +96,8 @@ pipeline {
         script {
           // PyLint commit status
           info = utils.warningsInfo()
-          echo info.description
-          echo "${info.total} (+${info.newWarnings}|-${info.fixedWarnings}) (${info.high}|${info.normal}|${info.low})"
+          echo info.totalDescription
+          echo info.diffDescription
           status = (info.total == 0) ? 'SUCCESS' : 'FAILURE'
           githubNotify context: 'Python linter', description: info.totalDescription,  status: status
         }
