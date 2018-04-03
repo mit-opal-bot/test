@@ -111,7 +111,7 @@ pipeline {
         githubNotify context: 'Functional tests', description: summary,  status: status
         info = utils.warningsInfo()
         echo info.description
-        echo info.total
+        echo "${info.total} (+${info.newWarnings}|-${info.fixedWarnings}) (${info.high}|${info.normal}|${info.low})"
       }
     }
     // Keep disk use down by deleting any dangling docker images older than 10 days.
