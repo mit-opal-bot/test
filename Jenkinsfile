@@ -109,9 +109,9 @@ pipeline {
         // Set GitHub commits statuses
         githubNotify context: 'Python linter', description: 'Build in progress',  status: status
         githubNotify context: 'Functional tests', description: summary,  status: status
-        info = utils.warningsInfo()
-        echo info
-        echo info.description
+        // info = utils.warningsInfo()
+        // echo info
+        // echo info.description
       }
     }
     // Keep disk use down by deleting any dangling docker images older than 10 days.
