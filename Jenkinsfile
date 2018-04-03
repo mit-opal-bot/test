@@ -71,17 +71,17 @@ pipeline {
             '''
           }
         }
-        // script {
-        //   docker.image('python:3-alpine').inside("--user=root --network=${compose_network}") {
-        //     sh '''
-        //       cd stuff
-        //       pip install -r features/requirements.txt
-        //       pip freeze
-        //       behave --junit --junit-directory reports || echo "behave exited with $?"
-        //       chown -R 1000:1000 reports
-        //     '''
-        //   }
-        // }
+        script {
+          docker.image('python:3-alpine').inside("--user=root --network=${compose_network}") {
+            sh '''
+              cd stuff
+              pip install -r features/requirements.txt
+              pip freeze
+              behave --junit --junit-directory reports || echo "behave exited with $?"
+              chown -R 1000:1000 reports
+            '''
+          }
+        }
       }
     }
     stage('Collect results') {
