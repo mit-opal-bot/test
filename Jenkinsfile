@@ -67,7 +67,9 @@ pipeline {
               pip install pylint
               pip install -r app/requirements.txt
               pip install -r features/requirements.txt
-              pylint --rcfile=${WORKSPACE}/.pylintrc --output-format=parseable app || echo "pylint exited with $?"
+              cd ..
+              pylint --rcfile=${WORKSPACE}/.pylintrc --output-format=parseable stuff || echo "pylint exited with $?"
+              cd stuff
               behave --junit --junit-directory reports || echo "behave exited with $?"
               chown -R 1000:1000 reports
             '''
