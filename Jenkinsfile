@@ -90,7 +90,7 @@ pipeline {
           $class: 'WarningsPublisher',
           consoleParsers: [[parserName: 'PyLint']],
         ])
-        junit '**/reports/*.xml'
+        // junit '**/reports/*.xml'
       }
     }
   }
