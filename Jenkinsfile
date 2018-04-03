@@ -67,8 +67,8 @@ pipeline {
             sh '''
               pip install pylint
               pip install -r stuff/app/requirements.txt
-              echo \$(pwd)/stuff/app/app.py
-              pylint --output-format=parseable \$(pwd)/stuff/app/app.py || echo "pylint exited with $?"
+              cd stuff/app
+              pylint --output-format=parseable app.py || echo "pylint exited with $?"
             '''
           }
         }
