@@ -43,7 +43,7 @@ pipeline {
         sh '''
           cd ${WORKSPACE}/stuff
           docker-compose up -d
-          docker-compose exec -T app /bin/bash -c \'until [ $(curl -k -s -L -w "%{http_code}" -o /dev/null "http://app:5000") -eq 200 ]; do echo "Waiting..."; sleep 1; done; echo "app container is ready"\'
+          docker-compose exec -T app /bin/sh -c \'until [ $(curl -k -s -L -w "%{http_code}" -o /dev/null "http://app:5000") -eq 200 ]; do echo "Waiting..."; sleep 1; done; echo "app container is ready"\'
         '''
         // Divine the network name just created by docker compose.
         script {
@@ -114,8 +114,7 @@ pipeline {
         githubNotify context: 'Functional tests', description: summary,  status: status
       }
     }
-    // If this build failed, delete the Docker images it built.
-    // If this build succeeded, keep its Docker images but delete any older
-    // saved versions of those images.
+    // Keep disk use down by deleting any dangling docker images older than 10 days.
+    // docker image ls --force --filter "until=240h"
   }
 }
