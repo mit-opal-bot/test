@@ -4,8 +4,8 @@ Feature: Hello world
      When we request a page
      Then we should get hello world
 
-  # Scenario: Failure
-  #   When we want a test to fail
+  Scenario: Failure
+    When we want a test to fail
 
   Scenario: Success
     When we want a test to succeed

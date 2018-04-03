@@ -10,9 +10,9 @@ pipeline {
     stage('Build Docker images') {
       steps {
         // Set GitHub commits statuses
-        githubNotify context: 'Docker images', description: 'Build in progress',  status: 'PENDING'
-        githubNotify context: 'Python linter', description: 'Build in progress',  status: 'PENDING'
-        githubNotify context: 'Functional tests', description: 'Build in progress',  status: 'PENDING'
+        githubNotify context: 'Docker images', description: 'In progress...',  status: 'PENDING'
+        githubNotify context: 'Python linter', description: 'In progress...',  status: 'PENDING'
+        githubNotify context: 'Functional tests', description: 'In progress...',  status: 'PENDING'
         sh '''
           cd ${WORKSPACE}/stuff
           docker-compose build
@@ -22,9 +22,9 @@ pipeline {
         always {
           script {
             if (currentBuild.currentResult == 'SUCCESS') {
-              description = 'Built successfully'
+              description = 'Images built successfully.'
             } else {
-              description = 'Failed to build'
+              description = 'Images failed to build.'
             }
             status = utils.gitHubStatusForBuildResult(currentBuild.currentResult)
             githubNotify context: 'Docker images', description: description,  status: status
