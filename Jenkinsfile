@@ -1,9 +1,6 @@
 @Library('testSummary') _
 import edu.mit.jenkins.Utils
 
-import hudson.tasks.test.AbstractTestResultAction
-import hudson.model.Actionable
-
 utils = new Utils()
 
 pipeline {
