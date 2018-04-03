@@ -66,7 +66,7 @@ pipeline {
         // Chown any created files to the jenkins user so it can read them
         // after tests have completed.
         script {
-          docker.image('python:3').inside("--user=root --network=${compose_network}") {
+          docker.image('python:3-alpine').inside("--user=root --network=${compose_network}") {
             sh '''
               pip install pylint
               pylint --output-format=parseable stuff || echo "pylint exited with $?"
@@ -74,7 +74,7 @@ pipeline {
           }
         }
         script {
-          docker.image('python:3').inside("--user=root --network=${compose_network}") {
+          docker.image('python:3-alpine').inside("--user=root --network=${compose_network}") {
             sh '''
               cd stuff
               pip install -r features/requirements.txt
