@@ -67,7 +67,7 @@ pipeline {
             sh '''
               pip install pylint
               pip install -r stuff/app/requirements.txt
-              pylint --output-format=parseable stuff/app/app.py || echo "pylint exited with $?"
+              pylint --output-format=parseable stuff || echo "pylint exited with $?"
             '''
           }
         }
@@ -91,7 +91,6 @@ pipeline {
           consoleParsers: [[parserName: 'PyLint']],
         ])
         junit '**/reports/*.xml'
-        sh 'printenv'
       }
     }
   }
