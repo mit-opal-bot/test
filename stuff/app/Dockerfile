@@ -11,6 +11,9 @@ COPY . .
 
 EXPOSE 5000
 
+# Flask doesn't respond to SIGTERM
+STOPSIGNAL SIGINT
+
 ENV FLASK_APP=src/app.py
 
 CMD ["flask", "run", "--host=0.0.0.0"]
