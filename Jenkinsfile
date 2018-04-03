@@ -65,9 +65,10 @@ pipeline {
         script {
           docker.image('python:3-alpine').inside("--user=root --network=${compose_network}") {
             sh '''
-              pip install pylint
-              pip install -r stuff/app/requirements.txt
               cd stuff
+              pip install pylint
+              pip install -r app/requirements.txt
+              pip install -r features/requirements.txt
               pylint --rcfile=${WORKSPACE}/.pylintrc --output-format=parseable app || echo "pylint exited with $?"
               behave --junit --junit-directory reports || echo "behave exited with $?"
               chown -R 1000:1000 reports
