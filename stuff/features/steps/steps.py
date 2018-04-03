@@ -13,8 +13,8 @@ def step_impl(context):
     
 @When("we want a test to fail")
 def step_impl(context):
-    pass
-
-@then("it does")
-def step_impl(context):
     assert False == True
+
+@When("we want a test to succeed")
+def step_impl(context):
+    assert True == True

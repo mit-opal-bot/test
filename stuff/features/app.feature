@@ -6,4 +6,6 @@ Feature: Hello world
 
   Scenario: Failure
     When we want a test to fail
-    Then it does
+
+  Scenario: Success
+    When we want a test to succeed
