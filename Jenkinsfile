@@ -79,10 +79,20 @@ pipeline {
     }
     stage('Collect results') {
       steps {
+        // It appears the best Jenkins' plugins can do right now is say if
+        // there are any warnings or errors at all. The diff results are
+        // between runs of the same branch, so not useful when wanting to know
+        // what the change will be if a PR is merged.
+        //
+        // It isn't easy to compare a pull request's results to its target
+        // branch. See https://issues.jenkins-ci.org/browse/JENKINS-13056,
+        // https://issues.jenkins-ci.org/browse/JENKINS-31812,
+        // https://wiki.jenkins.io/display/JENKINS/Static+Analysis+in+Pipelines?focusedCommentId=133956792#comment-133956792.
+        // It might be possible in version 3.0 of analysis-core-plugin when
+        // that's ready.
         step([
           $class: 'WarningsPublisher',
           consoleParsers: [[parserName: 'PyLint']],
-          usePreviousBuildAsReference: false,
         ])
         junit '**/reports/*.xml'
         script {
@@ -90,8 +100,8 @@ pipeline {
           info = utils.warningsInfo()
           echo info.description
           echo "${info.total} (+${info.newWarnings}|-${info.fixedWarnings}) (${info.high}|${info.normal}|${info.low})"
-          status = (info.newWarnings == 0) ? 'SUCCESS' : 'FAILURE'
-          githubNotify context: 'Python linter', description: info.description,  status: status
+          status = (info.total == 0) ? 'SUCCESS' : 'FAILURE'
+          githubNotify context: 'Python linter', description: info.totalDescription,  status: status
         }
         script {
           // Functional test commit status 
