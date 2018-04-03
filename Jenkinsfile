@@ -90,7 +90,21 @@ pipeline {
           $class: 'WarningsPublisher',
           consoleParsers: [[parserName: 'PyLint']],
         ])
-        // junit '**/reports/*.xml'
+        junit '**/reports/*.xml'
+        script {
+          // PyLint commit status
+          info = utils.warningsInfo()
+          echo info.description
+          echo "${info.total} (+${info.newWarnings}|-${info.fixedWarnings}) (${info.high}|${info.normal}|${info.low})"
+          status = (info.newWarnings == 0) ? 'SUCCESS' : 'FAILURE'
+          githubNotify context: 'Python linter', description: info.description,  status: status
+        }
+        script {
+          // Functional test commit status 
+          summary = utils.getTestSummary()
+          status = utils.gitHubStatusForBuildResult(currentBuild.currentResult)
+          githubNotify context: 'Functional tests', description: summary,  status: status
+        }
       }
     }
   }
@@ -102,19 +116,8 @@ pipeline {
         cd ${WORKSPACE}/stuff
         docker-compose down -v
       '''
-      script {
-        echo utils.getTestSummary()
-        summary = utils.getTestSummary()
-        status = utils.gitHubStatusForBuildResult(currentBuild.currentResult)
-        // Set GitHub commits statuses
-        githubNotify context: 'Python linter', description: 'Build in progress',  status: status
-        githubNotify context: 'Functional tests', description: summary,  status: status
-        info = utils.warningsInfo()
-        echo info.description
-        echo "${info.total} (+${info.newWarnings}|-${info.fixedWarnings}) (${info.high}|${info.normal}|${info.low})"
-      }
     }
     // Keep disk use down by deleting any dangling docker images older than 10 days.
-    // docker image ls --force --filter "until=240h"
+    // docker image prune --force --filter "until=240h"
   }
 }
