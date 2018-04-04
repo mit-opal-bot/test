@@ -53,11 +53,6 @@ pipeline {
         }
       }
     }
-    stage('Meaningless extra stage') {
-      steps {
-        echo "I'm an meaningless step"
-      }
-    }
     stage('Run tests') {
       steps {
         // Add containers to compose network so containers can find each other.
