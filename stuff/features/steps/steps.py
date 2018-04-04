@@ -1,3 +1,5 @@
+# pylint: disable=missing-docstring, unused-argument
+# pylint: disable=unused-wildcard-import, wildcard-import
 from behave import *
 import requests
 
@@ -10,11 +12,11 @@ def step_impl(context): # pylint: disable=function-redefined
 @then("we should get hello world") # pylint: disable=undefined-variable
 def step_impl(context): # pylint: disable=function-redefined
     assert context.response.content == b"Hello World!", context.response.content
-    
+
 @When("we want a test to fail") # pylint: disable=undefined-variable
 def step_impl(context): # pylint: disable=function-redefined
-    assert False == True
+    assert False
 
 @When("we want a test to succeed") # pylint: disable=undefined-variable
-def step_impl(context):
-    assert True == True
+def step_impl(context): # pylint: disable=function-redefined
+    assert True
